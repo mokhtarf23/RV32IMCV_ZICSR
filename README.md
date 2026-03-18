@@ -1,12 +1,12 @@
 # Custom RISC-V RV32IMCV Core with Vector Coprocessor
 
-This project was developed as my **bachelor’s thesis** in Information and Communication Engineering. It implements a custom **RISC-V RV32IMCV scalar core** along with a **vector coprocessor** to explore vector processing extensions and hardware design techniques.
+This project was developed as my **bachelor’s thesis** in Communication Systems Engineering at Ain-Shams University. It implements a custom **RISC-V RV32IMCV scalar core** along with a **vector coprocessor** to explore vector processing extensions and hardware design techniques.
 
 ---
 
 ## Scalar Core
 
-The scalar core is a **RV32IMCV-compliant processor** designed from scratch, featuring:
+The scalar core is a **RV32IMCV processor** designed from scratch, featuring:
 
 - RV32I base instructions with **M (multiply/divide), C (compressed)** extensions
 - A simple 5-stage pipeline (Fetch, Decode, Execute, Memory, Writeback)
@@ -86,21 +86,20 @@ The vector coprocessor currently supports the following instructions, with **SEW
 - **Permutation / Slide:**  
   - `VSLIDEUP`, `VSLIDEDOWN`, `VCOMPRESS`  
 
-All instructions are implemented in the vector execution units and support **vector element widths (SEW) of 32, 16, and 8 bits**.
+ **Supported vector element widths (SEW) of 32, 16, and 8 bits**.
 
 ## Implementation
 
-- **RTL Language:** Verilog
-- **Verification:** Functional simulation using [Simulator/Tool Name]
-- **FPGA Flow:** Synthesized and tested on [FPGA Board Name, if applicable]
+- **RTL Language:** Verilog + System Verilog
+- **Verification:** Functional simulation using [Questasim]
 
 ---
 
 ## Results
 
-- Successfully executed a set of benchmark programs on the scalar core
-- Vector coprocessor demonstrated speedup in vectorized operations
-- Provides a solid foundation for exploring RISC-V vector extensions in future work
+- The **scalar core** passed the **RISC-V Compliance Framework** and was synthesized to **2,168 LUTs** on Xilinx Vivado.  
+- The **vector coprocessor** demonstrated **~20× speedup** for parallel workloads (from test programs).  
+- Together, they provide a solid foundation for exploring RISC-V vector extensions in future work.
 
 ---
 
