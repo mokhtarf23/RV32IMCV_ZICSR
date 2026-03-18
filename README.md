@@ -4,6 +4,14 @@ This project was developed as my **bachelor’s thesis** in Communication System
 
 ---
 
+## Full System
+
+The system consists of the scalar core connected to the vector coprocessor, memory interfaces, and supporting structures.
+
+**System Diagram:**
+
+![Full System Diagram](Images/RVV-core-architecture.png)
+
 ## Scalar Core
 
 The scalar core is a **RV32IMCV processor** designed from scratch, featuring:
