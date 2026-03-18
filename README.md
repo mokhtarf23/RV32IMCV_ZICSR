@@ -15,7 +15,7 @@ The scalar core is a **RV32IMCV-compliant processor** designed from scratch, fea
 
 **Block Diagram:**
 
-![Scalar Core Diagram](path/to/scalar_core.png)
+![Scalar Core Diagram](Images/scalar-core-architecture.png)
 
 This core forms the base processor and manages communication with the vector coprocessor.
 
@@ -31,7 +31,7 @@ The vector coprocessor extends the scalar core with support for **vector instruc
 
 **Block Diagram:**
 
-![Vector Coprocessor Diagram](path/to/vector_coprocessor.png)
+![Vector Coprocessor Diagram](Images/vector-coprocessor-architecture.png)
 
 The coprocessor allows executing parallel operations efficiently, demonstrating the benefits of vector extensions in RISC-V.
 
