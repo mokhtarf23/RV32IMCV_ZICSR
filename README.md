@@ -27,7 +27,13 @@ This core forms the base processor and manages communication with the vector cop
 
 ## Vector Coprocessor
 
-The vector coprocessor extends the scalar core with support for **vector instructions**. Key features:
+The vector coprocessor extends the scalar core with support for **vector instructions**.
+
+**Block Diagram:**
+
+![Vector Coprocessor Diagram](Images/vector-coprocessor-architecture.png)
+
+Key features:
 
 - **Instruction Sequencer:**  
   - Receives one instruction at a time from the scalar core  
@@ -89,13 +95,7 @@ The following diagram illustrates operand forwarding between the Sequencer, Gath
 
 ![Chaining Flow Diagram](Images/Chaining_Flow.png)
 
-**Block Diagram:**
 
-![Vector Coprocessor Diagram](Images/vector-coprocessor-architecture.png)
-
-The coprocessor allows executing parallel operations efficiently, demonstrating the benefits of vector extensions in RISC-V.
-
----
 ## Supported Vector Instructions
 
 The vector coprocessor currently supports the following instructions, with **SEW = 32, 16, 8**:
