@@ -37,12 +37,13 @@ The vector coprocessor extends the scalar core with support for **vector instruc
 Key features:
 
 - **Instruction Sequencer:**  
-  - Receives one instruction at a time from the scalar core  
-  - Detects instruction type and forwards to the correct execution unit (**ALU, MUL, DIV, RED, PER, MMU**)  
-  - Issues instructions in order, while execution occurs out of order depending on latency  
+  - Receives decoded vector instructions from the **vector decoder** along with source registers from the **vector register file (VRF)**  
+  - Detects instruction type and forwards it to the correct execution unit (**ALU, MUL, DIV, RED, PER, MMU**)  
+  - Issues instructions in order, while execution occurs out of order depending on latency
 
-- **Reservation Stations:**  
-  - Can hold up to 2 instructions per unit  
+- **Reservation Stations:**
+  - One reservation station for each type of execution unit
+  - Can hold up to 2 instructions per unit (incl. operands and opcode) 
   - Prepares operands and forwards them to execution units  
 
 - **Execution Units:**  
