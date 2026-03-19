@@ -1,6 +1,6 @@
 # Custom RISC-V RV32IMCV Core with Vector Coprocessor
 
-This project was developed as my **bachelor’s thesis** in Communication Systems Engineering at Ain-Shams University. It implements a custom **RISC-V RV32IMCV scalar core** along with a **vector coprocessor** to explore vector processing extensions and hardware design techniques.
+This project was developed as my **bachelor’s thesis** in Communication Systems Engineering at Ain-Shams University. It implements a custom **RISC-V RV32IMCV scalar core** along with a **vector coprocessor** to explore the RISC-V ISA, vector processing extensions, and hardware design techniques.
 
 ## Full System
 
