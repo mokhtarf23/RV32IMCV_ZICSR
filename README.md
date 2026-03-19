@@ -131,7 +131,3 @@ The vector coprocessor currently supports the following instructions, with **SEW
 - Full RISC-V vector ISA support
 - Optimization for higher throughput and reduced latency
 - Integration with larger SoC designs
-
-## License
-
-This project is for academic purposes. Please refer to the license file for terms.
