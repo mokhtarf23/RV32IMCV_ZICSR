@@ -15,9 +15,10 @@ The system consists of the scalar core connected to the vector coprocessor, memo
 The scalar core is a **RV32IMCV processor** designed from scratch, featuring:
 
 - RV32I base instructions with **M (multiply/divide), C (compressed)** extensions
-- A simple 5-stage pipeline (Fetch, Decode, Execute, Memory, Writeback)
+- A 4-stage pipeline (Fetch, Decode, Execute, Memory+Writeback)
 - Fully synthesizable RTL implementation in Verilog
 - Tested using custom simulation testbenches
+- Passed the RISC-V Compliance Framework.
 
 **Block Diagram:**
 
@@ -38,7 +39,7 @@ Key features:
 - **Instruction Sequencer:**  
   - Receives one instruction at a time from the scalar core  
   - Detects instruction type and forwards to the correct execution unit (**ALU, MUL, DIV, RED, PER, MMU**)  
-  - Issues instructions in order, but execution is out of order depending on latency  
+  - Issues instructions in order, while execution occurs out of order depending on latency  
 
 - **Reservation Stations:**  
   - Can hold up to 2 instructions per unit  
@@ -59,33 +60,25 @@ Key features:
   - For memory instructions, results go directly to the **MMU**  
 
 - **Chaining Unit:**  
-  - Forwards operands **LIVE** from gatherers or from the write back queue if vectors are ready but not yet written back  
-
-- **Memory System:**  
-  - Vector memory organized into **4 banks**  
-  - **MMU** handles loads and stores  
-  - For write instructions, the MMU outputs the vector to the write back queue
-
-- **Chaining Unit:**  
   - Resolves data hazards by forwarding operands that are still in-flight, avoiding pipeline stalls  
   - Interfaces with the **Sequencer, Gatherers, Reservation Stations, and Write Back Queue**  
 
   - **Operation:**  
-    - When an instruction’s operands are not ready in the vector register file, the Sequencer issues a chaining request  
-    - The pipeline stalls only for that instruction, while already issued instructions continue executing  
+    - Triggered when operands are not yet available in the vector register file  
+    - The Sequencer stalls only the dependent instruction while others continue execution  
 
-  - **Gatherer Forwarding (Primary Path):**  
-    - Searches Gatherers for matching vector results  
-    - Streams **partial results** as they become available (element-by-element)  
-    - Allows early execution without waiting for the full vector  
-
-  - **Write Back Queue Fallback:**  
-    - If not found in Gatherers, retrieves the full vector from the write back queue  
-    - Immediately forwards it to the reservation station  
+  - **Forwarding Paths:**  
+    - From **Gatherers**: streams partial results as they become available (element-by-element)  
+    - From **Write Back Queue**: provides full vector results if already completed  
 
   - **Completion:**  
-    - Signals the Sequencer once the operand is ready  
-    - Resumes instruction dispatch with minimal pipeline disruption  
+    - Signals the Sequencer once operands are ready  
+    - Allows dispatch to resume with minimal pipeline disruption  
+
+- **Memory System:**  
+  - Vector memory organized into **4 banks**  
+  - **MMU** handles loads and stores  
+  - For write instructions, the MMU outputs the vector to the write back queue 
 
   - Improves performance by enabling **fine-grained operand forwarding** and reducing stalls in dependent vector operations
 
