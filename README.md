@@ -126,23 +126,17 @@ The vector coprocessor currently supports the following instructions, with **SEW
 - **RTL Language:** Verilog + System Verilog
 - **Verification:** Functional simulation using [Questasim] + Compliance Testing
 
----
-
 ## Results
 
 - The **scalar core** passed the **RISC-V Compliance Framework** and was synthesized to **2,168 LUTs** on Xilinx Vivado.  
 - The **vector coprocessor** demonstrated **~20× speedup** for parallel workloads (from test programs).  
 - Together, they provide a solid foundation for exploring RISC-V vector extensions in future work.
 
----
-
 ## Future Work
 
 - Full RISC-V vector ISA support
 - Optimization for higher throughput and reduced latency
 - Integration with larger SoC designs
-
----
 
 ## License
 
