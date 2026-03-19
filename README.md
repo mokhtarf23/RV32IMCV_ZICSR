@@ -2,8 +2,6 @@
 
 This project was developed as my **bachelor’s thesis** in Communication Systems Engineering at Ain-Shams University. It implements a custom **RISC-V RV32IMCV scalar core** along with a **vector coprocessor** to explore vector processing extensions and hardware design techniques.
 
----
-
 ## Full System
 
 The system consists of the scalar core connected to the vector coprocessor, memory interfaces, and supporting structures.
@@ -26,8 +24,6 @@ The scalar core is a **RV32IMCV processor** designed from scratch, featuring:
 ![Scalar Core Diagram](Images/scalar-core-architecture.png)
 
 This core forms the base processor and manages communication with the vector coprocessor.
-
----
 
 ## Vector Coprocessor
 
@@ -62,7 +58,36 @@ The vector coprocessor extends the scalar core with support for **vector instruc
 - **Memory System:**  
   - Vector memory organized into **4 banks**  
   - **MMU** handles loads and stores  
-  - For write instructions, the MMU outputs the vector to the write back queue  
+  - For write instructions, the MMU outputs the vector to the write back queue
+
+- **Chaining Unit:**  
+  - Resolves data hazards by forwarding operands that are still in-flight, avoiding pipeline stalls  
+  - Interfaces with the **Sequencer, Gatherers, Reservation Stations, and Write Back Queue**  
+
+  - **Operation:**  
+    - When an instruction’s operands are not ready in the vector register file, the Sequencer issues a chaining request  
+    - The pipeline stalls only for that instruction, while already issued instructions continue executing  
+
+  - **Gatherer Forwarding (Primary Path):**  
+    - Searches Gatherers for matching vector results  
+    - Streams **partial results** as they become available (element-by-element)  
+    - Allows early execution without waiting for the full vector  
+
+  - **Write Back Queue Fallback:**  
+    - If not found in Gatherers, retrieves the full vector from the write back queue  
+    - Immediately forwards it to the reservation station  
+
+  - **Completion:**  
+    - Signals the Sequencer once the operand is ready  
+    - Resumes instruction dispatch with minimal pipeline disruption  
+
+  - Improves performance by enabling **fine-grained operand forwarding** and reducing stalls in dependent vector operations
+
+**Chaining Flow Diagram:**
+
+The following diagram illustrates operand forwarding between the Sequencer, Gatherers, Write Back Queue, and Reservation Stations.
+
+![Chaining Flow Diagram](Images/Chaining_Flow.png)
 
 **Block Diagram:**
 
@@ -99,7 +124,7 @@ The vector coprocessor currently supports the following instructions, with **SEW
 ## Implementation
 
 - **RTL Language:** Verilog + System Verilog
-- **Verification:** Functional simulation using [Questasim]
+- **Verification:** Functional simulation using [Questasim] + Compliance Testing
 
 ---
 
