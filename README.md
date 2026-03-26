@@ -3,13 +3,13 @@
 This project was developed as part of my Bachelor’s thesis in Communication Systems Engineering at Ain Shams University.  
 It implements a custom RISC-V RV32IMCV processor extended with a vector coprocessor to explore vector processing, hardware design, and architectural trade-offs.
 
----
+
 
 ## System Overview
 
 ![Full System Diagram](Images/RVV-core-architecture.png)
 
----
+
 
 ## Scalar Core
 
@@ -35,7 +35,7 @@ The scalar core is a 4-stage pipelined RV32IMC processor designed from scratch.
 
 The scalar core serves as the control unit of the system and interfaces with the vector coprocessor.
 
----
+
 
 ## Vector Coprocessor
 
@@ -52,10 +52,10 @@ The design is built around a modular execution model with the following componen
   Instructions are issued in order, while execution can proceed out of order depending on unit latency.
 
 - Reservation Stations  
-  One per execution unit type, each holding up to two instructions.  
+  One per execution unit type (ALU,MUL,DIV,RED,PER,MEM), each holding up to two instructions.  
   Responsible for operand preparation and scheduling.
 
-- Execution Units  
+- Execution Units (ALU,MUL,DIV,RED,PER,MEM)  
   Each unit contains four parallel lanes.  
   Supports different element widths:
   - SEW 32 → 1 cycle
@@ -77,7 +77,6 @@ The design is built around a modular execution model with the following componen
 
 ![Chaining Flow Diagram](Images/Chaining_Flow.png)
 
----
 
 ## Supported Vector Instructions
 
@@ -102,7 +101,6 @@ Division and remainder:
 Permutation:
 - VSLIDEUP, VSLIDEDOWN, VCOMPRESS
 
----
 
 ## Implementation
 
@@ -110,7 +108,6 @@ Permutation:
 - Verification: Functional simulation using QuestaSim  
 - Compliance: RISC-V Compliance Framework  
 
----
 
 ## Results
 
@@ -118,7 +115,6 @@ Permutation:
 - Synthesized to ~2,168 LUTs (Xilinx Vivado)  
 - Vector coprocessor achieved ~20× speedup on data-parallel workloads  
 
----
 
 ## Future Work
 
@@ -126,14 +122,12 @@ Permutation:
 - Improved memory subsystem for vector workloads  
 - FPGA implementation and system-level integration  
 
----
 
 ## Notes
 
 This project is a proof-of-concept implementation focused on architectural exploration.  
 Some components can be further optimized or extended in terms of performance and completeness.
 
----
 
 ## Contribution
 
