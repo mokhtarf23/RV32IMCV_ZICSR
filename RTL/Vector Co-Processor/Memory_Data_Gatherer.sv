@@ -17,12 +17,12 @@ module memory_assembler (
     reg [3:0]   counter;
     reg [4:0]   max_cycles;
 
-    // Determine required number of cycles based on SEW
+    //determine required number of cycles based on SEW
     always @(*) begin
         case (SEW_i)
-            3'b000: max_cycles = 4;   // 4 x 32-bit
-            3'b101: max_cycles = 8;   // 8 x 16-bit
-            3'b110: max_cycles = 16;  // 16 x 8-bit
+            3'b000: max_cycles = 4;  //4x32
+            3'b101: max_cycles = 8;  //8x16
+            3'b110: max_cycles = 16; //16x8
         endcase
     end
 
@@ -35,18 +35,18 @@ module memory_assembler (
             ID_o        <= 0;
             Vd_addr_o   <= 0;
         end else begin
-            // Always pass through metadata
+            //always pass through metadata
             ID_o      <= ID_i;
             Vd_addr_o <= Vd_addr_i;
 
-            valid_o <= 0; // default
+            valid_o <= 0;
 
             if (valid_i) begin
-                // Accumulate data into buffer
+                //accumulate data into buffer
                 case (SEW_i)
-                    3'b000: buffer <= {buffer[95:0], data_i};          // 32-bit
-                    3'b101: buffer <= {buffer[111:0], data_i[15:0]};   // 16-bit
-                    3'b110: buffer <= {buffer[119:0], data_i[7:0]};    // 8-bit
+                    3'b000: buffer <= {buffer[95:0], data_i};     
+                    3'b101: buffer <= {buffer[111:0], data_i[15:0]};  
+                    3'b110: buffer <= {buffer[119:0], data_i[7:0]};   
                     default: buffer <= {buffer[95:0], data_i};
                 endcase
 
@@ -55,9 +55,9 @@ module memory_assembler (
                 if (counter + 1 == max_cycles) begin
                     valid_o <= 1;
                     case (SEW_i)
-                        3'b000: data_o <= {buffer[95:0], data_i};        // 4 x 32-bit
-                        3'b101: data_o <= {buffer[111:0], data_i[15:0]}; // 8 x 16-bit
-                        3'b110: data_o <= {buffer[119:0], data_i[7:0]};  // 16 x 8-bit
+                        3'b000: data_o <= {buffer[95:0], data_i}; 
+                        3'b101: data_o <= {buffer[111:0], data_i[15:0]};
+                        3'b110: data_o <= {buffer[119:0], data_i[7:0]};
                         default: data_o <= {buffer[95:0], data_i};
                     endcase
                     counter <= 0;
