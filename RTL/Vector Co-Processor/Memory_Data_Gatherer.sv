@@ -1,21 +1,21 @@
 module memory_assembler (
-    input              clk,
-    input              rst,
-    input              valid_i,
-    input      [31:0]  data_i,
-    input      [5:0]   ID_i,
-    input      [4:0]   Vd_addr_i,
-    input      [2:0]   SEW_i,
+    input clk,
+    input rst,
+    input valid_i,
+    input [31:0]  data_i,
+    input  [5:0]   ID_i,
+    input [4:0]   Vd_addr_i,
+    input  [2:0]   SEW_i,
 
-    output reg         valid_o,
-    output reg [127:0] data_o,
-    output reg [5:0]   ID_o,
-    output reg [4:0]   Vd_addr_o
+    output reg  valid_o,
+    output reg [127:0]data_o,
+    output reg [5:0] ID_o,
+    output reg [4:0]  Vd_addr_o
 );
 
     reg [127:0] buffer;
-    reg [3:0]   counter;
-    reg [4:0]   max_cycles;
+    reg [3:0] counter;
+    reg [4:0] max_cycles;
 
     //determine required number of cycles based on SEW
     always @(*) begin
