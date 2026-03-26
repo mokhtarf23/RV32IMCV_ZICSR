@@ -17,10 +17,8 @@ module Memory4Bank (
     output reg [2:0] SEW_o
 );
 
-    // Memory arrays
     reg [7:0] memory_b1 [0:4096];
 
-    // Synchronous write/remove logic
     always @(posedge clk or posedge reset) begin
         if (reset) begin
             
@@ -30,7 +28,7 @@ module Memory4Bank (
             ID_o_b1 <= 0;
         end  else begin
             valid_o_b1 <= 0;
-            // Bank 1
+            //Bank 1
             if (valid_i_b1) begin
                 if (write_enable_b1) begin
                     memory_ready_b1 <= 1'b0;
