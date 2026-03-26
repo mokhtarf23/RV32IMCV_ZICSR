@@ -14,7 +14,7 @@ The system consists of the scalar core connected to the vector coprocessor, memo
 
 The scalar core is a **RV32IMCV processor** designed from scratch, featuring:
 
-- RV32I base instructions with **M (multiply/divide), C (compressed)** extensions
+- RV32I base instructions with M (multiply/divide), C (compressed) extensions
 - A 4-stage pipeline (Fetch, Decode, Execute, Memory+Writeback)
 - Fully synthesizable RTL implementation in Verilog
 - Tested using custom simulation testbenches
@@ -28,7 +28,7 @@ This core forms the base processor and manages communication with the vector cop
 
 ## Vector Coprocessor
 
-The vector coprocessor extends the scalar core with support for **vector instructions**.
+The vector coprocessor extends the scalar core with support for vector instructions.
 
 **Block Diagram:**
 
@@ -37,8 +37,8 @@ The vector coprocessor extends the scalar core with support for **vector instruc
 Key features:
 
 - **Instruction Sequencer:**  
-  - Receives decoded vector instructions from the **vector decoder** along with source registers from the **vector register file (VRF)**  
-  - Detects instruction type and forwards it to the correct execution unit (**ALU, MUL, DIV, RED, PER, MMU**)  
+  - Receives decoded vector instructions from the **vector decoder** along with source registers from the vector register file (VRF)
+  - Detects instruction type and forwards it to the correct execution unit (ALU, MUL, DIV, RED, PER, MMU)  
   - Issues instructions in order, while execution occurs out of order depending on latency
 
 - **Reservation Stations:**
@@ -48,7 +48,7 @@ Key features:
 
 - **Execution Units:**  
   - Each unit has 4 parallel sub-units (e.g., 4 ALUs, 4 MULs)  
-  - Handles different **SEW (standard element widths)** efficiently:  
+  - Handles different SEW (standard element widths) efficiently:  
     - SEW 32 → 1 cycle  
     - SEW 16 → 2 cycles  
     - SEW 8 → 4 cycles  
@@ -57,8 +57,8 @@ Key features:
   - Reassemble outputs from execution units into complete vectors  
 
 - **Write Back Queue:**  
-  - Ensures **in-order committing**  
-  - For memory instructions, results go directly to the **MMU**  
+  - Ensures in-order committing
+  - For memory instructions, results go directly to the MMU
 
 - **Chaining Unit:**  
   - Resolves data hazards by forwarding operands that are still in-flight, avoiding pipeline stalls  
@@ -69,8 +69,8 @@ Key features:
     - The Sequencer stalls only the dependent instruction while others continue execution  
 
   - **Forwarding Paths:**  
-    - From **Gatherers**: streams partial results as they become available (element-by-element)  
-    - From **Write Back Queue**: provides full vector results if already completed  
+    - From Gatherers: streams partial results as they become available (element-by-element)  
+    - From Write Back Queue: provides full vector results if already completed  
 
   - **Completion:**  
     - Signals the Sequencer once operands are ready  
@@ -78,7 +78,7 @@ Key features:
 
 - **Memory System:**  
   - Vector memory organized into **4 banks**  
-  - **MMU** handles loads and stores  
+  - MMU handles loads and stores  
   - For write instructions, the MMU outputs the vector to the write back queue 
 
   - Improves performance by enabling **fine-grained operand forwarding** and reducing stalls in dependent vector operations
@@ -122,8 +122,8 @@ The vector coprocessor currently supports the following instructions, with **SEW
 
 ## Results
 
-- The **scalar core** passed the **RISC-V Compliance Framework** and was synthesized to **2,168 LUTs** on Xilinx Vivado.  
-- The **vector coprocessor** demonstrated **~20× speedup** for parallel workloads (from test programs).  
+- The scalar core passed the RISC-V Compliance Framework and was synthesized to 2,168 LUTs on Xilinx Vivado.  
+- The vector coprocessor demonstrated ~20× speedup for parallel workloads (from test programs).  
 - Together, they provide a solid foundation for exploring RISC-V vector extensions in future work.
 
 ## Future Work
