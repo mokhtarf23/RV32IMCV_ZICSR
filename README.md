@@ -1,115 +1,141 @@
 # Custom RISC-V RV32IMCV Core with Vector Coprocessor
 
-This project was developed as my bachelor's thesis in Communication Systems Engineering at Ain-Shams University. It implements a custom RISC-V RV32IMCV scalar core with a vector coprocessor to explore RISC-V ISA extensions, vector processing, and hardware design techniques.
+This project was developed as part of my Bachelor’s thesis in Communication Systems Engineering at Ain Shams University.  
+It implements a custom RISC-V RV32IMCV processor extended with a vector coprocessor to explore vector processing, hardware design, and architectural trade-offs.
+
+---
 
 ## System Overview
 
-**System Diagram:**  
 ![Full System Diagram](Images/RVV-core-architecture.png)
 
-The scalar core manages control and communication, while the vector coprocessor executes vector instructions in parallel to accelerate workloads.
+---
 
 ## Scalar Core
 
-The scalar core is a RV32IMCV processor designed from scratch. Key features:
+The scalar core is a 4-stage pipelined RV32IMC processor designed from scratch.
 
-- Supports RV32I base instructions with M (multiply/divide) and C (compressed) extensions
-- 4-stage pipeline: Fetch, Decode, Execute, Memory/Writeback
-- Fully synthesizable RTL in Verilog
-- Verified with custom simulation testbenches and passed the RISC-V Compliance Framework
+**Architecture:**
+- Instruction Fetch (IF)
+- Instruction Decode (ID)
+- Execute (EX)
+- Memory + Writeback (WB)
 
-**Block Diagram:**  
+**Features:**
+- RV32I base instruction set
+- M extension (multiplication and division)
+- C extension (compressed instructions)
+- Hazard handling (data and control)
+- Forwarding and stalling mechanisms
+- CSR unit for exception and interrupt handling
+- Fully synthesizable Verilog RTL
+- Verified using simulation and RISC-V compliance tests
+
 ![Scalar Core Diagram](Images/scalar-core-architecture.png)
+
+The scalar core serves as the control unit of the system and interfaces with the vector coprocessor.
+
+---
 
 ## Vector Coprocessor
 
-The vector coprocessor extends the scalar core with vector instruction support.
+The vector coprocessor accelerates data-parallel workloads by executing vector instructions alongside the scalar core.
 
-**Block Diagram:**  
 ![Vector Coprocessor Diagram](Images/vector-coprocessor-architecture.png)
 
-### Key Components
+### Architecture Overview
 
-**Instruction Sequencer**
+The design is built around a modular execution model with the following components:
 
-- Receives decoded vector instructions and source registers from the vector register file (VRF)
-- Detects instruction type and forwards it to the appropriate execution unit (ALU, MUL, DIV, RED, PER, MMU)
-- Issues instructions in order; execution can occur out of order depending on latency
+- Instruction Sequencer  
+  Receives decoded vector instructions and dispatches them to execution units.  
+  Instructions are issued in order, while execution can proceed out of order depending on unit latency.
 
-**Reservation Stations**
+- Reservation Stations  
+  One per execution unit type, each holding up to two instructions.  
+  Responsible for operand preparation and scheduling.
 
-- One station per execution unit, holding up to 2 instructions per unit
-- Prepares operands and forwards them to execution units
-
-**Execution Units**
-
-- Each unit has 4 parallel sub-units (e.g., ALUs, multipliers)
-- Handles different SEW (standard element widths) efficiently:
+- Execution Units  
+  Each unit contains four parallel lanes.  
+  Supports different element widths:
   - SEW 32 → 1 cycle
   - SEW 16 → 2 cycles
   - SEW 8 → 4 cycles
 
-**Gatherers**
+- Gatherers  
+  Reassemble partial outputs from execution units into full vectors.
 
-- Reassemble outputs from execution units into complete vectors
+- Writeback Queue  
+  Ensures in-order commit of results.
 
-**Write Back Queue**
+- Chaining Unit  
+  Enables forwarding of in-flight results to dependent instructions.  
+  Reduces stalls and improves pipeline efficiency by allowing partial or completed results to be reused.
 
-- Ensures in-order committing
-- For memory instructions, results go directly to the MMU
+- Memory System  
+  Organized into four banks with an MMU handling vector loads and stores.
 
-**Chaining Unit**
-
-- Resolves data hazards by forwarding operands that are still in-flight
-- Interfaces with the Sequencer, Gatherers, Reservation Stations, and Write Back Queue
-- Only stalls dependent instructions, minimizing pipeline disruption
-- Forwarding paths:
-  - From Gatherers: streams partial results element-by-element
-  - From Write Back Queue: provides full vector results if already completed
-- Signals Sequencer when operands are ready to resume dispatch
-
-**Memory System**
-
-- Vector memory organized into 4 banks
-- MMU handles loads and stores; write instructions go through Write Back Queue
-- Enables fine-grained operand forwarding and reduces stalls in dependent operations
-
-**Chaining Flow Diagram:**  
 ![Chaining Flow Diagram](Images/Chaining_Flow.png)
+
+---
 
 ## Supported Vector Instructions
 
-The vector coprocessor supports SEW = 32, 16, 8.
+The implementation supports a subset of vector instructions with element widths of 32, 16, and 8 bits.
 
-**Arithmetic and Logical:**  
-VADD, VSUB, VRSUB, VAND, VOR, VXOR, VMINU, VMIN, VMAXU, VMAX, VSLL, VSRL, VSRA, VSSRL, VSSRA
+Arithmetic and logical:
+- VADD, VSUB, VRSUB
+- VAND, VOR, VXOR
+- VMINU, VMIN, VMAXU, VMAX
+- VSLL, VSRL, VSRA, VSSRL, VSSRA
 
-**Mask Operations:**  
-VMSEQ, VMSNE, VMSLTU, VMSLT, VMSLEU, VMSLE, VMSGTU, VMSGT, VMAND, VMANDN, VMOR, VMORN, VMNOR, VMXOR, VMXNOR, VMNAND
+Mask operations:
+- VMSEQ, VMSNE, VMSLTU, VMSLT, VMSLEU, VMSLE, VMSGTU, VMSGT
+- VMAND, VMANDN, VMOR, VMORN, VMNOR, VMXOR, VMXNOR, VMNAND
 
-**Multiplication:**  
-VMULHU, VMUL, VMULHSU, VMULH
+Multiplication:
+- VMUL, VMULH, VMULHU, VMULHSU
 
-**Division / Remainder:**  
-VDIVU, VDIV, VREMU, VREM
+Division and remainder:
+- VDIV, VDIVU, VREM, VREMU
 
-**Permutation / Slide:**  
-VSLIDEUP, VSLIDEDOWN, VCOMPRESS
+Permutation:
+- VSLIDEUP, VSLIDEDOWN, VCOMPRESS
+
+---
 
 ## Implementation
 
-- RTL: Verilog + SystemVerilog
-- Verification: Functional simulation using Questasim + RISC-V Compliance Testing
+- RTL: Verilog / SystemVerilog  
+- Verification: Functional simulation using QuestaSim  
+- Compliance: RISC-V Compliance Framework  
+
+---
 
 ## Results
 
-- Scalar core passed the RISC-V Compliance Framework
-- Synthesized to 2,168 LUTs on Xilinx Vivado
-- Vector coprocessor achieved ~20× speedup for parallel workloads
-- Provides a foundation for exploring RISC-V vector extensions in future designs
+- Scalar core passed RISC-V compliance tests  
+- Synthesized to ~2,168 LUTs (Xilinx Vivado)  
+- Vector coprocessor achieved ~20× speedup on data-parallel workloads  
+
+---
 
 ## Future Work
 
-- Full RISC-V vector ISA support
-- Integration with larger SoC designs
-- FPGA implementation
+- Extended support for RISC-V vector ISA  
+- Improved memory subsystem for vector workloads  
+- FPGA implementation and system-level integration  
+
+---
+
+## Notes
+
+This project is a proof-of-concept implementation focused on architectural exploration.  
+Some components can be further optimized or extended in terms of performance and completeness.
+
+---
+
+## Contribution
+
+This work was developed as part of a group project.  
+I was primarily responsible for the processor architecture, pipeline implementation, vector coprocessor design, and system integration.
