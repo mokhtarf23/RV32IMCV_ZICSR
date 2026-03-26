@@ -4,8 +4,6 @@ This project was developed as my bachelor's thesis in Communication Systems Engi
 
 ## System Overview
 
-The system consists of the scalar core, vector coprocessor, memory interfaces, and supporting structures.
-
 **System Diagram:**  
 ![Full System Diagram](Images/RVV-core-architecture.png)
 
