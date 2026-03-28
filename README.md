@@ -41,7 +41,7 @@ The scalar core serves as the control unit of the system and interfaces with the
 
 The vector coprocessor accelerates data-parallel workloads by executing vector instructions alongside the scalar core.
 
-![Vector Coprocessor Diagram](Images/vector-coprocessor-architecture.png)
+![Vector Coprocessor Diagram](Images/vector-coprocessor-architecture-color.png)
 
 ### Architecture Overview
 
